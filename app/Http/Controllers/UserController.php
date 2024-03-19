@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\CryptoKey;
 use App\Services\CryptoService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 
 class UserController extends Controller
 {
@@ -29,24 +30,18 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'nif' => 'required|digits:9', 
-            'email' => 'required|email'
+            'nif' => 'required|digits:9'
         ]);
 
         $hasNif = User::where('nif', $request->nif)->first();
-        $hasEmail = User::where('email', $request->email)->first();
 
         if ($hasNif) {
             return response()->json(['message' => 'NIF already exists'], 400);
         }
 
-        if ($hasEmail) {
-            return response()->json(['message' => 'Email already exists'], 400);
-        }
-
         try {
             $cryptoService = new CryptoService();
-            $keyPair = $cryptoService->generateKeys();
+            $keyPair = $cryptoService->generate_keys();
             $user = User::create($request->all());
 
             CryptoKey::create([
@@ -76,32 +71,49 @@ class UserController extends Controller
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-
-        $public_key = $request->public_key;
         $cryptoService = new CryptoService();
+        $public_key = $cryptoService->get_key($user->id);
 
-        $has_valid_key = $cryptoService->validateKey($public_key, $user->id);
-
-        if (!$has_valid_key) {
-            return response()->json(['message' => 'Invalid public key'], 401);
+        if (!$public_key) {
+            return response()->json(['message' => 'Public key not found'], 404);
         }
 
-        return response()->json($user);
+        return response()->json([
+            'user' => $user,
+            'public_key' => $public_key
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required'
+        ]);
+
+        $user = User::where('id', $id)->first();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->update($request->all());
+
+        return response()->json($user);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(string $id)
     {
-        //
+        $user = User::where('id', $id)->first();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->delete();
+        return response()->json(['message' => 'User deleted']);
     }
 }

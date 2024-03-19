@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('private_key');
             $table->text('public_key');
-            $table->foreignUuid('user_id')->constrained();
+            $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

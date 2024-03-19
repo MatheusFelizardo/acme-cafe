@@ -7,9 +7,7 @@ use phpseclib3\Crypt\RSA;
 
 class CryptoService
 {
-
-    
-    public function generateKeys(): array
+    public function generate_keys(): array
     {
         $private = RSA::createKey();
         $public = $private->getPublicKey();
@@ -22,7 +20,17 @@ class CryptoService
         return $privateKeyValues;
     }
 
-    public function validateKey($publicKey, $userId): bool
+    public function get_key($userId): ?string
+    {
+        $key = CryptoKey::where('user_id', $userId)->first();
+        if (!$key) {
+            return null;
+        }
+
+        return $key->public_key;
+    }
+
+    public function validate_key($publicKey, $userId): bool
     {
         $savedKey = CryptoKey::where('user_id', $userId)->first();
         if (!$savedKey) {
