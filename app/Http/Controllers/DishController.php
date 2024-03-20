@@ -14,17 +14,15 @@ class DishController extends Controller
      */
     public function index()
     {
-        $dishes = Dish::all();
-        $dishes->load('categories');
-        return response()->json($dishes);
-    }
+        $dishes = Dish::with('categories')->get()->map(function ($dish) {
+            $dish->categories->transform(function ($category) {
+                return ['id' => $category->id, 'name' => $category->name];
+            });
+        
+            return $dish;
+        });
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return response()->json($dishes);
     }
 
     /**
@@ -53,6 +51,7 @@ class DishController extends Controller
     public function show(int $id)
     {
         $dish = Dish::find($id);
+        $dish->load('categories');
 
         if (!$dish) {
             return response()->json(['message' => 'Dish not found.'], 404);
@@ -108,8 +107,8 @@ class DishController extends Controller
      */
 
     public function categories() {
-        $dishes = FoodCategory::all();
-        return response()->json($dishes);
+        $categories = FoodCategory::all();
+        return response()->json($categories);
     }
 
     /*

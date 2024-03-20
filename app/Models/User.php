@@ -12,6 +12,11 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasUuids;
 
+    public function vouchers()
+    {
+        return $this->hasMany(UserVoucher::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

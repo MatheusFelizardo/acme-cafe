@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('vouchers', function (Blueprint $table) {
             $table->uuid('id')->primary(); 
-            $table->string('code');
-            $table->decimal('discount');
-            $table->dateTime('valid_until');
-            $table->enum('status', ['active', 'inactive']);
+            $table->string('code')->unique();
+            $table->decimal('discount')->nullable();
+            $table->dateTime('expires_at')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->string('type');
             $table->timestamps();
         });
     }

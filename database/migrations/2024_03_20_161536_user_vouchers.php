@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('user_vouchers', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('user_id')->constrained();
-            $table->foreignUuid('voucher_id')->constrained();
+            $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
+            $table->string('voucher_code');
+            $table->foreign('voucher_code')->references('code')->on('vouchers');
             $table->timestamps();
         });
     }

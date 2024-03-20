@@ -16,7 +16,14 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $users = User::all();
+            $users = User::with('vouchers')->get()->map(function ($user) {
+                $user->vouchers->transform(function ($voucher) {
+                    return ['id' => $voucher->id, 'code' => $voucher->voucher_code];
+                });
+            
+                return $user;
+            });
+
             return response()->json($users);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
