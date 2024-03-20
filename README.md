@@ -167,7 +167,7 @@ Example: /dishes/3
     "is_active": false 
 }
 ```
-4. Delete: DELETE /dishes/{dish_id} (No body)
+5. Delete: DELETE /dishes/{dish_id} (No body)
 ```
 Example: /dishes/3
 ```
