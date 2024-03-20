@@ -171,3 +171,28 @@ Example: /dishes/3
 ```
 Example: /dishes/3
 ```
+
+
+### Dishes Category 
+This will be used if we need to filter or show the dishes grouped by category. This has the "food_categories" table filled default with the values in the migration "2024_03_20_162507_food_categories"
+
+1. List: GET /dishes/categories (No body)
+2. Associate a category for a dish: POST /dishes/{dishId}/category
+```JSON
+{ 
+    "food_category_id": 1
+}
+```
+3. Update the associated category: PUT /dishes/{dishId}/category
+```JSON
+{ 
+    // this will replace one category by another
+	"old_category": 4,
+	"new_category": 1
+}
+```
+4. Disassociate a category: DELETE /dishes/{dishId}/category/{categoryId}
+```
+Example: /dishes/2/category/1
+This will disassociate the category id 1 in the dish id 2
+```

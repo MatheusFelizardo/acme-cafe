@@ -9,6 +9,10 @@ class Dish extends Model
 {
     use HasFactory;
 
+    public function categories() {
+        return $this->belongsToMany(FoodCategory::class, 'dish_category')->withTimestamps();
+    }
+
     protected $fillable = [
         'name',
         'description',

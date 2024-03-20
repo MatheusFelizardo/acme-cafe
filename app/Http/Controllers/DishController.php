@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dish;
+use App\Models\DishCategory;
+use App\Models\FoodCategory;
 use Illuminate\Http\Request;
 
 class DishController extends Controller
@@ -13,6 +15,7 @@ class DishController extends Controller
     public function index()
     {
         $dishes = Dish::all();
+        $dishes->load('categories');
         return response()->json($dishes);
     }
 
@@ -98,5 +101,71 @@ class DishController extends Controller
 
         $dish->delete();
         return response()->json(['message' => 'Dish deleted.']);
+    }
+
+    /**
+     * List all dishes category.
+     */
+
+    public function categories() {
+        $dishes = FoodCategory::all();
+        return response()->json($dishes);
+    }
+
+    /*
+    * Associate a category to a dish.
+    */
+
+    public function associate_category(Request $request, int $id) {
+        $dish = Dish::find($id);
+
+        if (!$dish) {
+            return response()->json(['message' => 'Dish not found.'], 404);
+        }
+
+        $category = FoodCategory::find($request->food_category_id);
+
+        if (!$category) {
+            return response()->json(['message' => 'Category not found.'], 404);
+        }
+
+        $already_associated = DishCategory::where('dish_id', $id)->where('food_category_id', $request->food_category_id)->first();
+
+        if ($already_associated) {
+            return response()->json(['message' => 'Category already associated to dish.'], 400);
+        }
+
+        $dish->categories()->attach($category->id);
+        $dish->touch();
+        return response()->json(['message' => 'Category associated to dish.', 'dish' => $dish, 'category' => $category]);
+    }
+
+    public function edit_associated_category(Request $request, int $id) {
+        $dish_category = DishCategory::where('dish_id', $id)->where('food_category_id', $request->old_category)->first();
+        
+        if (!$dish_category) {
+            return response()->json(['message' => 'Category not associated to dish.'], 404);
+        }
+
+        $dish_category->food_category_id = $request->new_category;
+        $dish_category->save();
+        return response()->json(['message' => 'Category updated.', 'dish_category' => $dish_category]);
+    }
+
+    public function remove_associated_category( int $dishId, int $categoryId) {
+        $dish = Dish::find($dishId);
+
+        if (!$dish) {
+            return response()->json(['message' => 'Dish not found.'], 404);
+        }
+
+        $dish_category = DishCategory::where('dish_id', $dishId)->where('food_category_id', $categoryId)->first();
+        if (!$dish_category) {
+            return response()->json(['message' => 'Category not associated to dish.'], 404);
+        }
+
+        $dish->categories()->detach($categoryId);
+        return response()->json(['message' => 'Category dissassociated from the dish.', 'dish_category' => $dish_category]);
+
     }
 }
