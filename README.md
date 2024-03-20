@@ -96,3 +96,78 @@
     ```
 
 You can test the request sending a GET request to http://localhost:8000/api/users. It should list some created users.
+
+
+## Endpoints
+The base url for development is http://localhost:8000/api
+### Users
+
+1. Create: POST /users
+```JSON
+{ 
+	"name": "User Example",
+	"nif": "319513948"
+}
+```
+2. List all: GET /users (No body required)
+3. List by id: GET /users/{user_id}
+```
+Example: /users/9b9a5b2d-6f65-4df3-88a8-6e40a92f2af9
+```
+4. Login: POST /users/authenticate
+```JSON
+{ 
+	"nif": "319513948"
+}
+```
+5. Update: PUT /users/{user_id} 
+```
+Example: /users/9b9a5b2d-6f65-4df3-88a8-6e40a92f2af9
+```
+```JSON
+{ 
+	"name": "Theus"
+}
+```
+6. Delete: DELETE /users/{user_id} (No body)
+```
+Example: /users/9b9a5b2d-6f65-4df3-88a8-6e40a92f2af9
+```
+
+### Dishes
+
+1. Create: POST /dishes
+```JSON
+{ 
+	"name": "Dish 1",
+	"description": "Delicous dish 1",
+	"price": 2.50,
+    "image": null, // optional - default: null (To do: implement image upload)
+	"featured": true, // optional - default: false
+    "is_active": false // optional - default: true
+}
+```
+2. List all: GET /dishes (No body required)
+3. List by id: GET /dishes/{dish_id} 
+```
+Example: /dishes/2
+```
+4. Update: PUT /dishes/{dish_id} 
+```
+Example: /dishes/3
+```
+```JSON
+{ 
+    // the values you want to update
+	"name": "Dish 1",
+	"description": "Delicous dish 1",
+	"price": 2.50,
+    "image": null, 
+	"featured": true, 
+    "is_active": false 
+}
+```
+4. Delete: DELETE /dishes/{dish_id} (No body)
+```
+Example: /dishes/3
+```

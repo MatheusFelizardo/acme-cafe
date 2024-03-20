@@ -28,10 +28,14 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $is_valid = $request->validate([
             'name' => 'required',
             'nif' => 'required|digits:9'
         ]);
+
+        if (!$is_valid) {
+            return response()->json(['message' => 'Invalid request format'], 400);
+        }
 
         $hasNif = User::where('nif', $request->nif)->first();
 
@@ -63,6 +67,19 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
+    public function show(string $id)
+    {
+        $user = User::where('id', $id)->first();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+        return response()->json($user);
+    }
+
+
+    /**
+     * Log in the specified resource.
+     */
     public function login(Request $request)
     {
         $nif = $request->nif;
@@ -89,9 +106,13 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
+        $is_valid = $request->validate([
             'name' => 'required'
         ]);
+
+        if (!$is_valid) {
+            return response()->json(['message' => 'Invalid data format in the request body'], 400);
+        }
 
         $user = User::where('id', $id)->first();
         if (!$user) {
