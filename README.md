@@ -196,3 +196,15 @@ This will be used if we need to filter or show the dishes grouped by category. T
 Example: /dishes/2/category/1
 This will disassociate the category id 1 in the dish id 2
 ```
+
+
+### Vouchers
+The voucher will be a service, but for now it's possible to create the association via API request
+
+1. List all: GET /vouchers (No body)
+2. Create: POST /vouchers/generate
+3. Associate with a user: POST /voucher/{voucherCode}/associate/{userId}
+```
+After generating the user and the voucher, you can associate using the route as the example.
+Example: /voucher/AP8B2F552024/associate/9b9c9a5b-1981-4cf3-a42d-d08307d59a1d
+```
