@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DishController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
@@ -19,3 +20,4 @@ Route::get('vouchers', [VoucherController::class, 'index']);
 Route::post('vouchers/generate', [VoucherController::class, 'generate']);
 Route::post('voucher/{code}/associate/{userId}', [VoucherController::class, 'associate']);
 
+Route::resource('orders', OrderController::class);
