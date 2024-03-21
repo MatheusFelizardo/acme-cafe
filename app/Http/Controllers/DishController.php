@@ -107,7 +107,14 @@ class DishController extends Controller
      */
 
     public function categories() {
-        $categories = FoodCategory::all();
+        $categories = FoodCategory::with('dishes')->get()->map(function ($category) {
+            $category->dishes->transform(function ($dish) {
+                return ['id' => $dish->id, 'name' => $dish->name, 'price' => $dish->price];
+            });
+        
+            return $category;
+        });
+        
         return response()->json($categories);
     }
 

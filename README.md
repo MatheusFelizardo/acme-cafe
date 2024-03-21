@@ -98,6 +98,10 @@
 You can test the request sending a GET request to http://localhost:8000/api/users. It should list some created users.
 
 
+## Database
+1. You can regenerate from zero using ```php artisan migrate:fresh```
+2. In case regenerating it from zero, you can use the seeder command to add the dishes for the menu in the database: ```php artisan db:seed DishSeeder```
+
 ## Endpoints
 The base url for development is http://localhost:8000/api
 ### Users

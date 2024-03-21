@@ -16,17 +16,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
         });
-        
-        DB::table('food_categories')->insert([
-            ['name' => 'food'],
-            ['name' => 'drink'],
-            ['name' => 'dessert'],
-            ['name' => 'appetizer'],
-            ['name' => 'main course'],
-            ['name' => 'side dish'],
-            ['name' => 'hot drink'],
-            ['name' => 'cold drink'],
-        ]);
     }
 
     /**
