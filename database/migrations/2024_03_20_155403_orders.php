@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignUuid('user_id')->constrained();
-            $table->foreignUuid('voucher_id')->constrained();
+            $table->foreignUuid('voucher_id')->constrained()->nullable();
             $table->decimal('total_price');
-            $table->text('notes');
+            $table->text('notes')->nullable();
             $table->enum('status', ['pending', 'paid', 'cancelled']);
             $table->timestamps();
         });

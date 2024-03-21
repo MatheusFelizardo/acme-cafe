@@ -4,8 +4,6 @@ namespace App\Services;
 
 use App\Models\Voucher;
 
-
-
 class VoucherService
 {
   public function generate_accumulated_payment_voucher() {
@@ -21,7 +19,7 @@ class VoucherService
     $voucher->discount = 0.05;
     $voucher->expires_at = now()->addDays(365);
     $voucher->is_active = true;
-    $voucher->type = 'accumulated_payment';
+    $voucher->type = '1';
     $voucher->save();
     return $voucher;
   }
@@ -39,7 +37,7 @@ class VoucherService
     $voucher->discount = 1;
     $voucher->expires_at = now()->addDays(365);
     $voucher->is_active = true;
-    $voucher->type = 'free_coffee';
+    $voucher->type = '2';
     $voucher->save();
     return $voucher;
   }
@@ -79,5 +77,14 @@ class VoucherService
 
   public function get_user_vouchers($userId) {
     return Voucher::where('user_id', $userId)->get();
+  }
+
+  public function apply_voucher($voucher, $amount) {
+    $voucherStrategies = [
+      1 => new FreeCoffeeStrategy(),
+      2 => new AccumulatedPaymentStrategy()
+    ];
+
+    return $voucherStrategies[$voucher->type]->apply_discount($amount);
   }
 }
